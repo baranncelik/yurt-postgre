@@ -23,7 +23,6 @@ const pgSession = require("connect-pg-simple")(session); // PostgreSQL session s
 app.set("view engine" , "ejs");
 app.set("views", path.join(__dirname,"views"));
 
-// PostgreSQL session store
 const sessionStore = new pgSession({
   conObject: {
     user: dbConfig.user,
@@ -32,10 +31,12 @@ const sessionStore = new pgSession({
     port: dbConfig.port || 5432,
     database: dbConfig.database,
     ssl: {
-      rejectUnauthorized: false, // Render için gerekli olabilir
+      rejectUnauthorized: false,
     },
   },
+  createTableIfMissing: true, // Tablo yoksa oluşturur
 });
+
 
 app.use(session({
   secret: "gizlisifrexx1",
