@@ -3,10 +3,10 @@ const router = express.Router();
 const userControllers = require("../controllers/user");
 const isAunthenticated = require("../middleware/auth");
 
-router.get("/", isAunthenticated ,userControllers.getIndex);
+router.get("/", userControllers.getIndex);
 
 
-router.post("/", isAunthenticated ,userControllers.postIndex);
+router.post("/" ,userControllers.postIndex);
 
 
 module.exports = router;
