@@ -5,32 +5,46 @@ const userRoutes = require("./routers/user");
 const adminRoutes = require("./routers/admin");
 const authRoutes = require("./routers/auth");
 const sequelize = require("./utility/database");
-const dbConfig = require("./utility/dbConfig");
+const dbConfig = require("./utility/dbConfig"); // Burada PostgreSQL bağlantı objesi var
 const Settings = require("./models/settings");
 const Featured = require("./models/featured");
 const Announcements = require("./models/announcements");
 const Sections = require("./models/sections");
 const Contacts = require("./models/contacts");
 const Administor = require("./models/administor");
-const { error } = require("console");
 const bcrypt = require("bcrypt");
-const session =require("express-session");
-const MySQLStore = require("express-mysql-session")(session);
-const sessionStore = new MySQLStore(dbConfig);
+const session = require("express-session");
+const pgSession = require("connect-pg-simple")(session); // PostgreSQL session store
+
+
 
 
 
 app.set("view engine" , "ejs");
 app.set("views", path.join(__dirname,"views"));
 
+// PostgreSQL session store
+const sessionStore = new pgSession({
+  conObject: {
+    user: dbConfig.user,
+    password: dbConfig.password,
+    host: dbConfig.host,
+    port: dbConfig.port || 5432,
+    database: dbConfig.database,
+    ssl: {
+      rejectUnauthorized: false, // Render için gerekli olabilir
+    },
+  },
+});
+
 app.use(session({
-    secret : "gizlisifrexx1",
-    resave : false,
-    saveUninitialized : false,
-    store : sessionStore,
-    cookie : {
-        maxAge: 7 * 24 * 60 * 60 * 1000
-    }
+  secret: "gizlisifrexx1",
+  resave: false,
+  saveUninitialized: false,
+  store: sessionStore,
+  cookie: {
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  },
 }));
 
 
